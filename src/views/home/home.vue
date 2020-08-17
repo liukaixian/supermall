@@ -2,18 +2,25 @@
   <div id="home">
     <NavBar class="home-nav">
       <template v-slot:center>
-        <h2  >购物街</h2>
+        <h2>购物街</h2>
       </template>
     </NavBar>
 
 
-    <Scroll id="scroll">
+    <Scroll id="scroll"
+     ref="scroll"
+     :probeType="3"
+     @scrollEvent="backTopShow"
+     :pullUpLoad="true"
+     @pullingUp="loadMore">
       <HomeSwiper :data="banner"></HomeSwiper>
       <Recommend :recommend="recommend"></Recommend>
       <Feature></Feature>
       <TabControl :controlNav="controlNav" class="tab-control" @tabClick="tabClick"></TabControl>
       <GoodsList :goodsList="goods[currentType].list"></GoodsList>
     </Scroll>
+    <BackTop @click.native="backTop" v-show="backTopIsShow"></BackTop>
+
  </div>
 </template>
 
@@ -21,11 +28,13 @@
   import  HomeSwiper from  '@/views/home/homeChild/HomeSwiper.vue'
   import Scroll from '@/components/common/scroll/Scroll.vue'
 
+
   import NavBar from '@/components/common/navbar/NabBar.vue'
   import  Recommend from  '@/views/home/homeChild/Recommend.vue'
   import  Feature from  '@/views/home/homeChild/Feature.vue'
   import  TabControl from '@/components/content/TabControl.vue'
   import  GoodsList from '@/components/content/GoodsList.vue'
+  import BackTop from "@/components/content/BackTop.vue"
 
   import {getHomeMultiData,getHomeGodds} from '../../network/home.js'
   export default{
@@ -38,7 +47,8 @@
       Recommend,
       Feature,
       TabControl,
-      GoodsList
+      GoodsList,
+      BackTop
     },
     data(){
       return {
@@ -50,7 +60,8 @@
           new:{page:0,list:[]},
           sell:{page:0,list:[]}
         },
-        currentType:'pop'
+        currentType:'pop',
+        backTopIsShow:false
       }
     },
     created() {
@@ -66,6 +77,17 @@
         this.currentType=Object.keys(this.goods)[index]
        /* this.currentType=Object.keys(this.goods)[index] */
       },
+      backTop(){
+        this.$refs.scroll.scroll.scrollTo(0,0,1000)
+      },
+      backTopShow(position){
+          this.backTopIsShow= -position.y>1000
+      }
+      ,
+      loadMore(){
+        this.getHomeGoos(this.currentType)
+      },
+
 
       /* 网络请求*/
       getHomeMultiData(){
@@ -78,6 +100,9 @@
        let page = this.goods[type].page+1
         getHomeGodds(type,page).then(data=>{
           this.goods[type].list.push(...data.data.list)
+          this.goods[type].page=page
+           this.$refs.scroll.scroll.refresh()
+          this.$refs.scroll.scroll.finishPullUp()
         })
 
       }
@@ -88,7 +113,7 @@
 <style scoped="scoped">
   #home{
     margin-top: 44px;
-    height: calc(100vh - 49px);
+    height: calc(100vh - 44px);
     position: relative;
   }
   .home-nav{
