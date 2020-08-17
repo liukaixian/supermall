@@ -39,7 +39,7 @@
   </div>
 </template>
 
-<script>
+<script >
   import TabBar from '@/components/common/tabbar/TabBar.vue'
   import TabBarItem from '@/components/common/tabbar/TabBarItem.vue'
   export default{
@@ -50,5 +50,5 @@
   }
 </script>
 
-<style>
+<style scoped="scoped">
 </style>

@@ -5,16 +5,21 @@
         <h2  >购物街</h2>
       </template>
     </NavBar>
-    <HomeSwiper :data="banner"></HomeSwiper>
-    <Recommend :recommend="recommend"></Recommend>
-    <Feature></Feature>
-    <TabControl :controlNav="controlNav" class="tab-control" @tabClick="tabClick"></TabControl>
-    <GoodsList :goodsList="goods[currentType].list"></GoodsList>
+
+
+    <Scroll id="scroll">
+      <HomeSwiper :data="banner"></HomeSwiper>
+      <Recommend :recommend="recommend"></Recommend>
+      <Feature></Feature>
+      <TabControl :controlNav="controlNav" class="tab-control" @tabClick="tabClick"></TabControl>
+      <GoodsList :goodsList="goods[currentType].list"></GoodsList>
+    </Scroll>
  </div>
 </template>
 
 <script>
   import  HomeSwiper from  '@/views/home/homeChild/HomeSwiper.vue'
+  import Scroll from '@/components/common/scroll/Scroll.vue'
 
   import NavBar from '@/components/common/navbar/NabBar.vue'
   import  Recommend from  '@/views/home/homeChild/Recommend.vue'
@@ -26,6 +31,7 @@
   export default{
     components:{
       HomeSwiper,
+      Scroll,
 
       NavBar,
       TabControl,
@@ -48,7 +54,7 @@
       }
     },
     created() {
-      this.getHomeMultiData
+      this.getHomeMultiData()
 
       this.getHomeGoos('pop')
       this.getHomeGoos('new')
@@ -57,7 +63,7 @@
     methods:{
       /* 事件监听*/
       tabClick(index){
-        this.currentType=Object.keys(this.goods)[index] 
+        this.currentType=Object.keys(this.goods)[index]
        /* this.currentType=Object.keys(this.goods)[index] */
       },
 
@@ -79,9 +85,11 @@
   }
 </script>
 
-<style>
+<style scoped="scoped">
   #home{
     margin-top: 44px;
+    height: calc(100vh - 49px);
+    position: relative;
   }
   .home-nav{
     background-color: var(--color-tint);
@@ -97,5 +105,14 @@
    position: sticky;
    top: 44px;
    z-index: 9;
+ }
+ #scroll{
+
+   position: absolute;
+   right: 0;
+   left: 0;
+   top: 0;
+   bottom: 49px;
+   overflow: hidden;
  }
 </style>
