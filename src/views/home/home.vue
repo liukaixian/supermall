@@ -6,17 +6,24 @@
       </template>
     </NavBar>
 
-
+    <TabControl :controlNav="controlNav"
+    @tabClick="tabClick"
+    :class="{fixed:tabControlIsShow}"
+     v-show="tabControlIsShow"
+    ref="tabControl2" ></TabControl>
     <Scroll id="scroll"
-     ref="scroll"
-     :probeType="3"
-     @scrollEvent="backTopShow"
-     :pullUpLoad="true"
-     @pullingUp="loadMore">
-      <HomeSwiper :data="banner"></HomeSwiper>
+         ref="scroll"
+         :probeType="3"
+         @scrollEvent="backTopShow"
+         :pullUpLoad="true"
+         @pullingUp="loadMore">
+
+      <HomeSwiper :data="banner" @imgLoad="swiperImgLoad"></HomeSwiper>
       <Recommend :recommend="recommend"></Recommend>
       <Feature></Feature>
-      <TabControl :controlNav="controlNav" class="tab-control" @tabClick="tabClick"></TabControl>
+      <TabControl :controlNav="controlNav"
+        @tabClick="tabClick"
+        ref="tabControl" ></TabControl>
       <GoodsList :goodsList="goods[currentType].list"></GoodsList>
     </Scroll>
     <BackTop @click.native="backTop" v-show="backTopIsShow"></BackTop>
@@ -61,7 +68,9 @@
           sell:{page:0,list:[]}
         },
         currentType:'pop',
-        backTopIsShow:false
+        backTopIsShow:false,
+        offsetTop:550,
+        tabControlIsShow:false
       }
     },
     created() {
@@ -75,17 +84,24 @@
       /* 事件监听*/
       tabClick(index){
         this.currentType=Object.keys(this.goods)[index]
-       /* this.currentType=Object.keys(this.goods)[index] */
+
+        this.$refs.tabControl2.currentIndex=index
+        this.$refs.tabControl.currentIndex=index
       },
       backTop(){
         this.$refs.scroll.scroll.scrollTo(0,0,1000)
       },
       backTopShow(position){
           this.backTopIsShow= -position.y>1000
+          this.tabControlIsShow=-position.y>this.offsetTop
+
       }
       ,
       loadMore(){
         this.getHomeGoos(this.currentType)
+      },
+      swiperImgLoad(){
+         this.offsetTop = this.$refs.tabControl.$el.offsetTop
       },
 
 
@@ -126,11 +142,7 @@
     top: 0;
     z-index: 999;
   }
- #home .tab-control{
-   position: sticky;
-   top: 44px;
-   z-index: 9;
- }
+
  #scroll{
 
    position: absolute;
@@ -139,5 +151,10 @@
    top: 0;
    bottom: 49px;
    overflow: hidden;
+ }
+ .fixed{
+   position: relative;
+    z-index: 6;
+
  }
 </style>

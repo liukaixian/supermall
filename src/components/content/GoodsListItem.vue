@@ -1,6 +1,7 @@
 <template>
-  <div class="goods-list-item">
-    <img :src="goodsItem.show.img" />
+  <div class="goods-list-item" @click="goodsListItemClick">
+
+    <img :src="showImage(goodsItem)"  @load="imgLoad" />
     <div class="goods-info">
       <p>{{goodsItem.title}}</p>
       <span class="price">{{goodsItem.price}}</span>
@@ -14,7 +15,27 @@
     props:{
       goodsItem:{
         type:Object,
-        default:{}
+        default (){
+          return{}
+        }
+      }
+    },
+    methods:{
+      goodsListItemClick(){
+        this.$router.push({
+          path:'/detail',
+          query:{
+            iid:this.goodsItem.iid
+          }
+        })
+      },
+      // 动态显示图片
+      showImage(item) {
+        return item.img || item.image || item.show.img;
+      },
+      imgLoad(){
+       this.$bus.$emit("imgLoad")
+
       }
     }
   }

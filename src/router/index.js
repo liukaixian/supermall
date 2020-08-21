@@ -8,6 +8,7 @@ const home = ()=>import ('@/views/home/home')
 const classes = ()=>import ('@/views/category/classes')
 const cart = ()=>import ('@/views/cart/cart')
 const profile = ()=>import ('@/views/profile/profile')
+const detail =()=>import ('@/views/detail/detail')
     const routes = [
   	  {
   	  		  path:"/",
@@ -25,7 +26,11 @@ const profile = ()=>import ('@/views/profile/profile')
   	  },{
   		  path:"/profile",
   		  component:profile
-  	  }
+  	  },{
+        name:'detail',
+        path:"/detail",
+        component:detail
+      }
   ]
 
 const router = new VueRouter({
